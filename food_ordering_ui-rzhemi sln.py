@@ -1,66 +1,67 @@
 #user interface to the main menu
 import data
 import functions
-
+customer_order_list = []
 def show_main_menu():
-  diner_name = input("Please enter your name:")
-  print(f"Welcome to the Diner,{diner_name}")
-
   while True:
-    print("Your name diner")
-    print("__________Main Menu_______")
-    print('N - start a new order')
-    print('X - close orders and print the check')
+    print("Richard Zhemi's super") #edit to show your name and Second name
+    print("__________")
+    print('N for a new order')
+    print('C to change an order')
+    print('X for close orders and print the check')
     print('Q for quit')
     user_menu_choice = input('Your choice: ')
     if user_menu_choice in 'Qq':
       break
     elif user_menu_choice in 'Xx':
-      print('This option prints the list of items ordered, extended price, total, Taxes, and Grand total ')
+      if customer_order_list:
+                functions.print_check(customer_order_list)
+                customer_order_list.clear()
+                print("Order list reset.")
+      else:
+        print("No orders to print.")
     elif user_menu_choice in 'Nn':
       print('New order')
+      make_order()  #calls a function for adding to the orders
+      # User menu choice processing
+    elif user_menu_choice in 'Cc':
+        change_order()
     else:
-      make_order(user_menu_choice.upper())  
-
-  def new_order():
-    print("Starting a new oder...")
-    current_order = []
-    while True:
-      show_main_menu
-      menu_choice = input('Enter item code to add to your order type or Type D for done')
-
-      if menu_choice == 'D':
-        break
-      else:
-        add_item_to_order(menu_choice,current_order))
-
-print(f"Order complete:{current_order}")
-def make_order(menu_choice):
-  print('Functionality for menu choice ', menu_choice)
-  print("Returning to main menu...")
-
-def show_menu():
-  print("__________Menu__________")
-    print("Drinks: D1 - Coffee ($2), D2 - Tea ($1.5)")
-    print("Appetizers: A1 - Garlic Bread ($3), A2 - Salad ($4)")
-    print("Entrees: E1 - Steak ($20), E2 - Pasta ($15)")
-    print("Desserts: DS1 - Ice Cream ($5), DS2 - Cake ($6)")
-    print("________________________")
-
-def add_item_to_order(menu_choice, current_order):
+        print("You did not enter a valid input, Try again")
   
-    item_info = functions.get_item_information(menu_choice)
-    
-    if item_info:
-        current_order.append(item_info)
-        print(f"Added {item_info['name']} to the order - ${item_info['price']}")
-    else:
-        print(f"Item with code {menu_choice} not found.")
+
+def make_order():
+  # print('Functionality for menu choice ', menu_choice)
+  user_selection = functions.get_item_number()
+  item_code, quantity = user_selection.split()
+  item_price = functions.get_item_information(item_code)[1]
+  item_name = functions.get_item_information(item_code)[0]
+  customer_order_list.append((item_code,int(quantity)))
+  print(f"Added {quantity}x of {item_code} {item_name} at ${item_price*int(quantity)} to your order.")
+
+def change_order():
+  """Allows the user to change their order by removing or updating items."""
+  if not customer_order_list:
+      print("No items to change.")
+      return
+
+  print("\nCurrent order:")
+  for i, (item, qty) in enumerate(customer_order_list):
+      print(f"{i + 1}. {item}: x{qty}")
+  
+  index = int(input("Enter the number of the item you want to change: ")) - 1
+  new_qty = int(input("Enter new quantity (0 to remove): "))
+
+  if new_qty == 0:
+      removed_item = customer_order_list.pop(index)
+      print(f"Removed {removed_item[0]} from the order.")
+  else:
+      customer_order_list[index] = (customer_order_list[index][0], new_qty)
+      print(f"Updated {customer_order_list[index][0]} to quantity {new_qty}.")
+
+  
 
 
-
-def close_order(menu_choice):
-  print('Functionality for menu choice ', menu_choice)
 
 
 
@@ -71,7 +72,7 @@ if __name__ == '__main__':
     salads = []
     entrees = []
     dessert= []
-    print(functions.get_item_information('D1'))
-    #show_main_menu()
+    #print(functions.get_item_information('D1'))
+    show_main_menu()
 
 
